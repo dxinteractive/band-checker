@@ -1,7 +1,9 @@
 const scrapeIt = require("scrape-it");
+const scrapers = require("./scrapers");
 
 var args = process.argv.slice(2);
-var limit = Number(args[0] || 100);
+var limit = Number(args[0] || 0);
+var check = args[1];
 
 scrapeIt(
     "http://soybomb.com/tricks/words/",
@@ -17,6 +19,26 @@ scrapeIt(
     }
 )
     .then(page => {
-        var words = page.table[2].rows.filter(ii => ii.length <= limit);
-        words.forEach(ii => console.log("- " + ii));
+        var words = page.table[2].rows.filter(ii => !limit || ii.length <= limit);
+        if(!check) {
+            words.forEach(ii => console.log("- " + ii));
+            return;
+        }
+
+        if(check === "insta") {
+            console.log("...");
+            words.forEach(word => {
+                var shortWord = word.replace(/\s/g, "");
+                Promise.all([
+                    scrapers.checkInstagram(shortWord),
+                    //scrapers.checkYoutube(shortWord)
+                ])
+                    .then(([insta]) => {
+                        var str = "- "+shortWord;
+                        str += insta.free ? " :)" : "";
+                        //str += youtube.free ? " :)" : "";
+                        console.log(str);
+                    });
+            });
+        }
     });
