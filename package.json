@@ -1,0 +1,11 @@
+{
+  "name": "bandnamer",
+  "version": "0.0.0",
+  "description": "Lol so random",
+  "main": "index.js",
+  "author": "Damien Clarke",
+  "license": "MIT",
+  "dependencies": {
+    "scrape-it": "^3.3.2"
+  }
+}
